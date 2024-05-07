@@ -3,7 +3,7 @@ import ctrlWrapper from "../helpers/cntrWrapper.js";
 
 const getAllContacts = async (req, res) => {
 	const data = await contactsService.getContactList();
-	res.status(200).json({ code: 200, data });
+	res.status(200).json(data);
 };
 
 const getOneContact = async (req, res) => {
@@ -11,11 +11,11 @@ const getOneContact = async (req, res) => {
 	const contact = await contactsService.getContactById(id);
 
 	if (!contact) {
-		res.status(404).json({ code: 404, message: 'Not found' });
+		res.status(404).json({ message: 'Not found' });
 		return;
 	}
 
-	res.status(200).json({ code: 200, data: contact });
+	res.status(200).json(contact);
 };
 
 const deleteContact = async (req, res) => {
@@ -27,12 +27,12 @@ const deleteContact = async (req, res) => {
 		return;
 	}
 
-	res.status(200).json({ code: 200, message: 'contact deleted' });
+	res.status(200).json(contact);
 };
 
 const createContact = async (req, res) => {
 	const data = await contactsService.addContact(req.body);
-	res.status(200).json({ code: 200, data });
+	res.status(201).json(data);
 };
 
 const updateContact = async (req, res) => {
@@ -40,11 +40,11 @@ const updateContact = async (req, res) => {
 	const contact = await contactsService.updateContact(id, req.body);
 
 	if (!contact) {
-		res.status(404).json({ code: 404, message: 'Not found' });
+		res.status(404).json({ message: 'Not found' });
 		return;
 	}
 
-	res.status(201).json({ code: 201, data: contact });
+	res.status(200).json(contact);
 };
 
 export default {
