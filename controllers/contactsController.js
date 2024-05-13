@@ -1,5 +1,5 @@
 import contactsService from "../services/contactsService.js";
-import ctrlWrapper from "../helpers/cntrWrapper.js";
+import ctrlWrapper from "../decorators/cntrWrapper.js";
 
 const getAllContacts = async (req, res) => {
 	const data = await contactsService.getContactList();
@@ -20,10 +20,10 @@ const getOneContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
 	const { id } = req.params;
-	const contact = await contactsService.removeContact(id);
+	const contact = await contactsService.deleteContact(id);
 
 	if (!contact) {
-		res.status(404).json({ code: 404, message: 'Not found' });
+		res.status(404).json({ message: 'Not found' });
 		return;
 	}
 
