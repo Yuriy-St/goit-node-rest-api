@@ -6,12 +6,14 @@
     "start:dev": "cross-env NODE_ENV=development nodemon ./server.js"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.4",
     "morgan": "^1.10.0",
     "nanoid": "^5.0.7"

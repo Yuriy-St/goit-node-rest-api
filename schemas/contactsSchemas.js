@@ -1,21 +1,18 @@
 import Joi from "joi";
 import { EMAIL_REGEXP, PHONE_REGEXP } from "../constants/regExp.js";
 
+const name = Joi.string();
+const email = Joi.string().pattern(EMAIL_REGEXP);
+const phone = Joi.string().pattern(PHONE_REGEXP);
+
 export const createContactSchema = Joi.object({
-	name: Joi.string().required(),
-	email: Joi.string().pattern(EMAIL_REGEXP).required(),
-	phone: Joi.string().pattern(PHONE_REGEXP).required(),
+	name: name.required(),
+	email: email.required(),
+	phone: phone.required(),
 })
 
 export const updateContactSchema = Joi.object({
-	name: Joi.string(),
-	email: Joi.string().pattern(EMAIL_REGEXP),
-	phone: Joi.string().pattern(PHONE_REGEXP),
+	name,
+	email,
+	phone,
 })
-
-export const updateFavoriteSchema = Joi.object({
-  favorite: Joi
-    .boolean()
-    .required()
-    .messages({ 'any.required': 'Missing field "favorite"' }),
-});
