@@ -70,7 +70,6 @@ const updateAvatar = async (req, res) => {
 
 const resizeAvatar = async (avatarPath) => {
 	const avatar = await Jimp.read(avatarPath);
-	console.log(avatar);
 	await avatar.resize(250, 250).writeAsync(avatarPath);
 }
 
