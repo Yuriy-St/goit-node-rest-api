@@ -49,7 +49,7 @@ const login = async ({ email, password }) => {
 
 const update = async (id, body) => await User.findByIdAndUpdate(id, body);
 
-const logout = async (id) => await User.findByIdAndUpdate(id, { token: null });
+const logout = async (id) => await User.findByIdAndUpdate(id, { token: '' });
 
 export default {
 	authenticate,

@@ -4,6 +4,7 @@ import { registerUserSchema, loginUserSchema, updateUserSchema } from '../schema
 import authenticate from '../middleware/authenticate.js';
 import validateBody from '../decorators/validateBody.js';
 import authController from '../controllers/authController.js';
+import uploadAvatar from '../middleware/uploadAvatar.js';
 
 
 const authRouter = express.Router();
@@ -18,5 +19,6 @@ authRouter.post('/logout', authenticate, authController.logout);
 
 authRouter.get('/current', authenticate, authController.current);
 
+authRouter.patch('/avatars', authenticate, uploadAvatar, authController.updateAvatar);
 
 export default authRouter;
