@@ -5,6 +5,7 @@ import ctrlWrapper from "../decorators/cntrWrapper.js";
 import authService from "../services/authService.js";
 import gravatar from 'gravatar';
 import Jimp from 'jimp';
+import HttpError from '../helpers/HttpError.js';
 
 const register = async (req, res) => {
 	const { email, subscription, avatarURL } = await authService.register({
@@ -21,12 +22,13 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-	const { token, email, subscription } = await authService.login(req.body);
+	const { token, email, subscription, avatarURL } = await authService.login(req.body);
 	res.status(200).json({
 		token,
 		user: {
 			email,
 			subscription,
+			avatarURL,
 		}
 	})
 };
@@ -38,22 +40,27 @@ const logout = async (req, res) => {
 
 const update = async (req, res) => {
 	const { user, body } = req;
-	const { email, subscription } = await authService.update(user._id, body);
+	const { email, subscription, avatarURL } = await authService.update(user._id, body);
 	res.status(200).json({
 		email,
 		subscription,
+		avatarURL,
 	})
 }
 
 const current = async (req, res) => {
-	const { email, subscription } = req.user;
+	const { email, subscription, avatarURL } = req.user;
 	res.status(200).json({
 		email,
 		subscription,
+		avatarURL
 	})
 };
 
 const updateAvatar = async (req, res) => {
+	if (!req.file) {
+		throw HttpError(400, 'No file attached');
+	}
 	const { _id } = req.user;
 	const { path: tmpPath, filename } = req.file;
 	const avatarsDir = path.resolve('public','avatars');
