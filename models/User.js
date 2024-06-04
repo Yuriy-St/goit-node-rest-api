@@ -29,9 +29,17 @@ const userSchema = new Schema(
 		avatarURL: {
 			type: String,
 			required: true,
-		}
+		},
+		verified: {
+			type: Boolean,
+			default: false,
+		},
+		verificationToken: {
+			type: String,
+			required: [true, 'Verify token is required'],
+		},
 	},
-	{ versionKey: false, timestamps: true }
+{ versionKey: false, timestamps: true }
 );
 
 userSchema.post('save', handleSaveError);

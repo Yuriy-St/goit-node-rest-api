@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 import HttpError from "../helpers/HttpError.js";
 import User from "../models/User.js";
+import { nanoid } from 'nanoid';
 
 const authenticate = async (token) => {
 	const { SECRET_KEY } = process.env;
@@ -19,9 +20,12 @@ const register = async (body) => {
 	}
 
 	const hashedPassword = await bcrypt.hash(password, 10);
+	const verificationToken = nanoid();
+
 	return await User.create({
 		...body,
 		password: hashedPassword,
+		verificationToken,
 	});
 };
 
@@ -51,10 +55,13 @@ const update = async (id, body) => await User.findByIdAndUpdate(id, body);
 
 const logout = async (id) => await User.findByIdAndUpdate(id, { token: '' });
 
+const findOne = async (body) => await User.findOne(body);
+
 export default {
 	authenticate,
 	register,
 	login,
 	logout,
 	update,
+	findOne,
 };

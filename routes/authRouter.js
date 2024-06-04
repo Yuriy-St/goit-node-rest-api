@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { registerUserSchema, loginUserSchema, updateUserSchema } from '../schemas/userSchemas.js';
+import { registerUserSchema, loginUserSchema, updateUserSchema, verifyEmailSchema } from '../schemas/userSchemas.js';
 import authenticate from '../middleware/authenticate.js';
 import validateBody from '../decorators/validateBody.js';
 import authController from '../controllers/authController.js';
@@ -20,5 +20,9 @@ authRouter.post('/logout', authenticate, authController.logout);
 authRouter.get('/current', authenticate, authController.current);
 
 authRouter.patch('/avatars', authenticate, uploadAvatar, authController.updateAvatar);
+
+authRouter.post('/verify', validateBody(verifyEmailSchema), authController.resendVerifyEmail);
+
+authRouter.get('/veirify/:verificationToken', authController.verifyEmail);
 
 export default authRouter;

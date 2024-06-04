@@ -15,8 +15,12 @@ export const registerUserSchema = Joi.object({
 export const loginUserSchema = Joi.object({
 	email,
 	password,
-})
+});
 
 export const updateUserSchema = Joi.object({
 	subscription,
+});
+
+export const verifyEmailSchema = Joi.object({
+	email,
 })

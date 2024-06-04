@@ -6,12 +6,61 @@ import authService from "../services/authService.js";
 import gravatar from 'gravatar';
 import Jimp from 'jimp';
 import HttpError from '../helpers/HttpError.js';
+import sendEmail from '../helpers/sendEmail.js';
+
+const { BASE_URL } = process.env;
+
+const sendVerifyEmail = async ({ email, verificationToken }) => {
+	const verifyEmail = {
+		to: email,
+		subject: 'Email verification',
+		html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click to verify email</a>`,
+	};
+
+	return await sendEmail(verifyEmail);
+}
+
+const resendVerifyEmail = async (req, res) => {
+	const { email } = req.body;
+	const user = await authService.findOne({ email });
+	if (!user) {
+		throw HttpError(401, 'Email or password is invalid');
+	}
+	if (user.verified) {
+		throw HttpError(400, 'Verification has already been passed');
+	}
+	await sendVerifyEmail(user);
+
+	res.status(200).json({
+		message: "Verification email sent",
+	})
+}
+
+const verifyEmail = async (req, res) => {
+	const { verificationToken } = req.params;
+	const user = await authService.findOne({ verificationToken });
+	if (!user) {
+		throw HttpError(404, 'User not found');
+	}
+
+	await authService.update(user._id, {
+		verified: true,
+		verificationToken: '',
+	});
+
+	res.status(200).json({
+		message: 'Verification successful',
+	})
+}
 
 const register = async (req, res) => {
-	const { email, subscription, avatarURL } = await authService.register({
+	const { email, subscription, avatarURL, verificationToken } = await authService.register({
 		...req.body,
 		avatarURL: gravatar.url(req.body.email),
 	});
+
+	await sendVerifyEmail({ email, verificationToken });
+
 	res.status(201).json({
 		user: {
 			email,
@@ -22,7 +71,13 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-	const { token, email, subscription, avatarURL } = await authService.login(req.body);
+	const user = await authService.login(req.body);
+	const { token, verified, email, subscription, avatarURL } = user;
+
+	if (!verified) {
+		throw HttpError(401, 'Please verify your email');
+	}
+
 	res.status(200).json({
 		token,
 		user: {
@@ -63,7 +118,7 @@ const updateAvatar = async (req, res) => {
 	}
 	const { _id } = req.user;
 	const { path: tmpPath, filename } = req.file;
-	const avatarsDir = path.resolve('public','avatars');
+	const avatarsDir = path.resolve('public', 'avatars');
 	await resizeAvatar(tmpPath);
 	const avatarPath = path.join(avatarsDir, filename);
 	await fsPromises.rename(tmpPath, avatarPath);
@@ -87,4 +142,6 @@ export default {
 	update: ctrlWrapper(update),
 	current: ctrlWrapper(current),
 	updateAvatar: ctrlWrapper(updateAvatar),
+	verifyEmail: ctrlWrapper(verifyEmail),
+	resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
 }
