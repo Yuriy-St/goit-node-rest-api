@@ -22,5 +22,5 @@ export const updateUserSchema = Joi.object({
 });
 
 export const verifyEmailSchema = Joi.object({
-	email,
+	email: email.messages({'any.required': 'missing required field email'}),
 })

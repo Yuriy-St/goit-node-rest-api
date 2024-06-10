@@ -23,6 +23,6 @@ authRouter.patch('/avatars', authenticate, uploadAvatar, authController.updateAv
 
 authRouter.post('/verify', validateBody(verifyEmailSchema), authController.resendVerifyEmail);
 
-authRouter.get('/veirify/:verificationToken', authController.verifyEmail);
+authRouter.get('/verify/:verificationToken', authController.verifyEmail);
 
 export default authRouter;

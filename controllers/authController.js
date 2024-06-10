@@ -24,7 +24,7 @@ const resendVerifyEmail = async (req, res) => {
 	const { email } = req.body;
 	const user = await authService.findOne({ email });
 	if (!user) {
-		throw HttpError(401, 'Email or password is invalid');
+		throw HttpError(404, 'User not found');
 	}
 	if (user.verified) {
 		throw HttpError(400, 'Verification has already been passed');

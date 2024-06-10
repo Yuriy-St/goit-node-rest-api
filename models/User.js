@@ -4,6 +4,8 @@ import { handleSaveError, setUpdateSettings } from './hooks.js';
 import { EMAIL_REGEXP, PHONE_REGEXP } from '../constants/regExp.js';
 import { SUBSCRIPTION } from '../constants/userConstants.js';
 
+Schema.Types.String.checkRequired(v => v != null);
+
 const userSchema = new Schema(
 	{
 		password: {
